@@ -1,6 +1,8 @@
 package database
 
 import (
+	"forum/pkg/models"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -19,5 +21,7 @@ func NewSQLiteDB(dbPath string) (*gorm.DB, error) {
 }
 
 func createTables(db *gorm.DB) error {
-	return db.AutoMigrate()
+	return db.AutoMigrate(
+		&models.UserModel{},
+	)
 }
