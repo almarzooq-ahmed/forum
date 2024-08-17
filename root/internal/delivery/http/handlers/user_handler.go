@@ -37,3 +37,21 @@ func (h *UserHandler) Register(c *gin.Context) {
 		Email:    user.Email,
 	})
 }
+
+func (h *UserHandler) Login(c *gin.Context) {
+	var req request_models.LoginUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := h.userUseCase.LoginUser(c.Request.Context(), &req)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response_models.LoginUserResponse{
+		Token: token,
+	})
+}

@@ -24,7 +24,7 @@ func main() {
 	}
 
 	userRepo := repositories.NewUserRepository(db)
-	userUseCase := usecases.NewUserUseCase(userRepo)
+	userUseCase := usecases.NewUserUseCase(userRepo, cfg.JwtSecretKey)
 	userHandler := handlers.NewUserHandler(userUseCase)
 
 	router := router.SetupRouter(userHandler)

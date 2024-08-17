@@ -12,8 +12,9 @@ import (
 
 // Holds application configurations
 type Config struct {
-	DatabaseDSN string
-	ServerPort  int
+	DatabaseDSN  string
+	ServerPort   int
+	JwtSecretKey string
 }
 
 // Loads configurations from .env file
@@ -36,8 +37,14 @@ func LoadConfig() (*Config, error) {
 		port = 8080
 	}
 
+	jwtSecretKey := os.Getenv("JWT_SECRET_KEY")
+	if jwtSecretKey == "" {
+		return nil, fmt.Errorf("JWT_SECRET_KEY environment variable is required")
+	}
+
 	return &Config{
-		DatabaseDSN: dbDSN,
-		ServerPort:  port,
+		DatabaseDSN:  dbDSN,
+		ServerPort:   port,
+		JwtSecretKey: jwtSecretKey,
 	}, nil
 }
