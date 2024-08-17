@@ -52,7 +52,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response_models.LoginUserResponse{
-		Token: token,
+		Token: *token,
 	})
 }
 
