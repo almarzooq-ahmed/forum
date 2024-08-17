@@ -11,11 +11,11 @@ import (
 )
 
 type UserHandler struct {
-	registerUserUseCase usecases.RegisterUserUseCase
+	userUseCase usecases.UserUseCase
 }
 
-func NewUserHandler(registerUserUseCase usecases.RegisterUserUseCase) *UserHandler {
-	return &UserHandler{registerUserUseCase: registerUserUseCase}
+func NewUserHandler(userUseCase usecases.UserUseCase) *UserHandler {
+	return &UserHandler{userUseCase: userUseCase}
 }
 
 func (h *UserHandler) Register(c *gin.Context) {
@@ -25,7 +25,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
-	user, err := h.registerUserUseCase.RegisterUser(c.Request.Context(), &req)
+	user, err := h.userUseCase.RegisterUser(c.Request.Context(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

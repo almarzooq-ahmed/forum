@@ -24,8 +24,8 @@ func main() {
 	}
 
 	userRepo := repositories.NewUserRepository(db)
-	registerUserUseCase := usecases.NewRegisterUserUseCase(userRepo)
-	userHandler := handlers.NewUserHandler(registerUserUseCase)
+	userUseCase := usecases.NewUserUseCase(userRepo)
+	userHandler := handlers.NewUserHandler(userUseCase)
 
 	router := router.SetupRouter(userHandler)
 
