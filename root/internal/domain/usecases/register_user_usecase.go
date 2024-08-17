@@ -11,19 +11,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserUseCase interface {
+type RegisterUserUseCase interface {
 	RegisterUser(ctx context.Context, req *request_models.RegisterUserRequest) (*entities.User, error)
 }
 
-type userUseCase struct {
+type registerUserUseCase struct {
 	userRepo repositories.UserRepository
 }
 
-func NewUserUseCase(userRepo repositories.UserRepository) UserUseCase {
-	return &userUseCase{userRepo: userRepo}
+func NewRegisterUserUseCase(userRepo repositories.UserRepository) RegisterUserUseCase {
+	return &registerUserUseCase{userRepo: userRepo}
 }
 
-func (uc *userUseCase) RegisterUser(ctx context.Context, req *request_models.RegisterUserRequest) (*entities.User, error) {
+func (uc *registerUserUseCase) RegisterUser(ctx context.Context, req *request_models.RegisterUserRequest) (*entities.User, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
