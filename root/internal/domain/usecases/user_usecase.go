@@ -16,7 +16,7 @@ import (
 
 type UserUseCase interface {
 	RegisterUser(ctx context.Context, req *request_models.RegisterUserRequest) (*entities.User, error)
-	LoginUser(ctx context.Context, req *request_models.LoginUserRequest) (string, error)
+	LoginUser(ctx context.Context, req *request_models.LoginUserRequest) (*string, error)
 	GetUserByUsername(ctx context.Context, username string) (*entities.User, error)
 }
 
@@ -56,18 +56,22 @@ func (uc *userUseCase) RegisterUser(ctx context.Context, req *request_models.Reg
 	}, nil
 }
 
-func (uc *userUseCase) LoginUser(ctx context.Context, req *request_models.LoginUserRequest) (string, error) {
+func (uc *userUseCase) LoginUser(ctx context.Context, req *request_models.LoginUserRequest) (*string, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
 	user, err := uc.userRepo.FindByUsername(req.Username)
 	if err != nil || user == nil || !checkPasswordHash(req.Password, user.Password) {
-		return "", errors.New("invalid credentials")
+		return nil, errors.New("invalid credentials")
 	}
 
 	token, err := generateJWT(user.Username, uc.jwtKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	return &token, nil
 }
 
 func (uc *userUseCase) GetUserByUsername(ctx context.Context, username string) (*entities.User, error) {
