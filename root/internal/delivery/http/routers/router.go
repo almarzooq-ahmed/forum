@@ -15,7 +15,7 @@ func SetupRouter(userHandler *handlers.UserHandler) *gin.Engine {
 		{
 			user := v1.Group("/user")
 			{
-				user.POST("/register", userHandler.Register)
+				user.POST("/", userHandler.Register)
 			}
 		}
 	}
