@@ -55,3 +55,29 @@ func (h *UserHandler) Login(c *gin.Context) {
 		Token: token,
 	})
 }
+
+func (h *UserHandler) GetUser(c *gin.Context) {
+	claims, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	username, ok := claims.(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		return
+	}
+
+	user, err := h.userUseCase.GetUserByUsername(c.Request.Context(), username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response_models.GetUserResponse{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+	})
+}

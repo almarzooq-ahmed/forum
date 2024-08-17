@@ -17,6 +17,7 @@ import (
 type UserUseCase interface {
 	RegisterUser(ctx context.Context, req *request_models.RegisterUserRequest) (*entities.User, error)
 	LoginUser(ctx context.Context, req *request_models.LoginUserRequest) (string, error)
+	GetUserByUsername(ctx context.Context, username string) (*entities.User, error)
 }
 
 type userUseCase struct {
@@ -67,6 +68,19 @@ func (uc *userUseCase) LoginUser(ctx context.Context, req *request_models.LoginU
 	}
 
 	return token, nil
+}
+
+func (uc *userUseCase) GetUserByUsername(ctx context.Context, username string) (*entities.User, error) {
+	user, err := uc.userRepo.FindByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entities.User{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+	}, nil
 }
 
 // Password hashing using bycrypt
