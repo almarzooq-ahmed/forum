@@ -36,7 +36,9 @@ func JWTMiddleware(secretKey string) gin.HandlerFunc {
 		}
 
 		// Add claims to context
+		c.Set("claims", claims["id"])
 		c.Set("claims", claims["username"])
+		c.Set("claims", claims["email"])
 
 		c.Next()
 	}

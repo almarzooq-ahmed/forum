@@ -66,7 +66,7 @@ func (uc *userUseCase) LoginUser(ctx context.Context, req *request_models.LoginU
 		return nil, errors.New("invalid credentials")
 	}
 
-	token, err := generateJWT(user.Username, uc.jwtKey)
+	token, err := generateJWT(user.ID, user.Username, user.Email, uc.jwtKey)
 	if err != nil {
 		return nil, err
 	}
@@ -103,9 +103,11 @@ func checkPasswordHash(password, hash string) bool {
 }
 
 // generates a jwt token
-func generateJWT(username, jwtKey string) (string, error) {
+func generateJWT(id uint, username, email, jwtKey string) (string, error) {
 	claims := jwt.MapClaims{
+		"id":       id,
 		"username": username,
+		"email":    email,
 		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
