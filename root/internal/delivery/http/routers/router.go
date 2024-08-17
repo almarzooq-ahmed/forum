@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(userHandler *handlers.UserHandler, jwtSecretKey string) *gin.Engine {
+func SetupRouter(userHandler *handlers.UserHandler, postHandler *handlers.PostHandler, jwtSecretKey string) *gin.Engine {
 	r := gin.Default()
 
 	api := r.Group("/api")
@@ -19,6 +19,14 @@ func SetupRouter(userHandler *handlers.UserHandler, jwtSecretKey string) *gin.En
 				user.POST("/", userHandler.Register)
 				user.POST("/login", userHandler.Login)
 				user.GET("/", middleware.JWTMiddleware(jwtSecretKey), userHandler.GetUser)
+			}
+
+			post := v1.Group("/post")
+			{
+				post.POST("/", postHandler.CreatePost)
+				post.GET("/:id", postHandler.GetPost)
+				post.PUT("/:id", postHandler.UpdatePost)
+				post.DELETE("/:id", postHandler.DeletePost)
 			}
 		}
 	}

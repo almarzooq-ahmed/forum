@@ -25,5 +25,6 @@ func CreateDB(dbPath string) (*gorm.DB, error) {
 func migrateTables(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&db_models.User{},
+		&db_models.Post{},
 	)
 }

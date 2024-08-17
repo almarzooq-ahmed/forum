@@ -27,7 +27,11 @@ func main() {
 	userUseCase := usecases.NewUserUseCase(userRepo, cfg.JwtSecretKey)
 	userHandler := handlers.NewUserHandler(userUseCase)
 
-	router := router.SetupRouter(userHandler, cfg.JwtSecretKey)
+	postRepo := repositories.NewPostRepository(db)
+	postUseCase := usecases.NewPostUseCase(postRepo)
+	postHandler := handlers.NewPostHandler(postUseCase)
+
+	router := router.SetupRouter(userHandler, postHandler, cfg.JwtSecretKey)
 
 	err = router.Run(":" + strconv.Itoa(cfg.ServerPort))
 	if err != nil {
