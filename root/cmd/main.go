@@ -24,14 +24,17 @@ func main() {
 	}
 
 	userRepo := repositories.NewUserRepository(db)
-	userUseCase := usecases.NewUserUseCase(userRepo, cfg.JwtSecretKey)
-	userHandler := handlers.NewUserHandler(userUseCase)
-
 	postRepo := repositories.NewPostRepository(db)
+
+	authUseCase := usecases.NewAuthUseCase(userRepo, cfg.JwtSecretKey)
+	userUseCase := usecases.NewUserUseCase(userRepo)
 	postUseCase := usecases.NewPostUseCase(postRepo)
+
+	authHandler := handlers.NewAuthHandler(authUseCase)
+	userHandler := handlers.NewUserHandler(userUseCase)
 	postHandler := handlers.NewPostHandler(postUseCase)
 
-	router := router.SetupRouter(userHandler, postHandler, cfg.JwtSecretKey)
+	router := router.SetupRouter(authHandler, userHandler, postHandler, cfg.JwtSecretKey)
 
 	err = router.Run(":" + strconv.Itoa(cfg.ServerPort))
 	if err != nil {
